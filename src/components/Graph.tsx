@@ -5,8 +5,8 @@ import { Network } from 'vis-network';
 const Graph = () => {
   const containerRef = useRef(null);
   const [nodes, setNodes] = useState(new DataSet([
-    { id: 1, label: 'Node 1' },
-    { id: 2, label: 'Node 2' },
+    { id: 1, label: '1' },
+    { id: 2, label: '2' },
     // Add more nodes as needed
   ]));
   const [edges, setEdges] = useState(new DataSet([
@@ -28,7 +28,7 @@ const Graph = () => {
     };
   }, [edges, nodes]);
 
-  return <div ref={containerRef} style={{ width: '100%', height: '500px' }} />;
+  return <div ref={containerRef} style={{ width: '100%', height: '100%' }} />;
 };
 
 export default Graph;
