@@ -1,7 +1,8 @@
 import React from 'react';
 import Graph from './components/Graph';
 import Console from './components/Console';
-import { Algorithm, GraphData } from './types';
+import { Algorithm, GraphData, Node } from './types';
+import ForwardingTable from './components/ForwardingTable';
 
 function App() {
   const [graphData, setGraphData] = React.useState<GraphData>({
@@ -14,6 +15,7 @@ function App() {
     ]
   });
   const [algorithm, setAlgorithm] = React.useState<Algorithm>("LS");
+  const [selectedNode, setSelectedNode] = React.useState<Node | null>(null);
 
   return (
     <>
@@ -23,7 +25,15 @@ function App() {
         algorithm={algorithm}
         setAlgorithm={setAlgorithm}
       />
-      <Graph data={graphData}/>
+      <Graph
+        data={graphData}
+        setSelectedNode={setSelectedNode}
+      />
+      <ForwardingTable
+        graphData={graphData}
+        algorithm={algorithm}
+        selectedNode={selectedNode}
+      />
     </>
   );
 }
