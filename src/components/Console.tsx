@@ -106,59 +106,24 @@ const Console: React.FC<ConsoleProps> = ({
 
       <Typography level='h4'>Edges</Typography>
       <Stack direction='row' width='100%' justifyContent='space-between'>
-        <Box width='32%'>
-          <FormLabel>
-            From
-            <Input
-              fullWidth
-              type="number"
-              value={from}
-              onChange={e => setFrom(e.target.valueAsNumber)}
-              slotProps={{
-                input: {
-                  min: 1,
-                  max: graphData.nodes.length,
-                  step: 1
-                },
-              }}
-            />
-          </FormLabel>
-        </Box>
-        <Box width='32%'>
-          <FormLabel>
-            To
-            <Input
-              fullWidth
-              type="number"
-              value={to}
-              onChange={e => setTo(e.target.valueAsNumber)}
-              slotProps={{
-                input: {
-                  min: 1,
-                  max: graphData.nodes.length,
-                  step: 1
-                },
-              }}
-            />
-          </FormLabel>
-        </Box>
-        <Box width='32%'>
-          <FormLabel>
-            Cost
-            <Input
-              fullWidth
-              type="number"
-              value={cost}
-              onChange={e => setCost(e.target.valueAsNumber)}
-              slotProps={{
-                input: {
-                  min: 0,
-                  step: 1
-                },
-              }}
-            />
-          </FormLabel>
-        </Box>
+        {[
+          { label: 'From', value: from, setValue: setFrom, inputProps: { min: 1, max: graphData.nodes.length, step: 1 } },
+          { label: 'To', value: to, setValue: setTo, inputProps: { min: 1, max: graphData.nodes.length, step: 1 } },
+          { label: 'Cost', value: cost, setValue: setCost, inputProps: { min: 0, step: 1 } }
+        ].map(({ label, value, setValue, inputProps }) => (
+          <Box width='32%' key={label}>
+            <FormLabel>
+              {label}
+              <Input
+                fullWidth
+                type="number"
+                value={value}
+                onChange={e => setValue(e.target.valueAsNumber)}
+                slotProps={{ input: inputProps }}
+              />
+            </FormLabel>
+          </Box>
+        ))}
       </Stack>
       <Button onClick={updateEdge}>Update Edge</Button>
 
