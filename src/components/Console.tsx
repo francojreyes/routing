@@ -21,8 +21,8 @@ const Console: React.FC<ConsoleProps> = ({
 }) => {
 
   const setNumNodes = (n: number) => {
+    if (isNaN(n) || n < 2) return;
     const newNodes = [...graphData.nodes];
-
     if (n > newNodes.length) {
       // Add nodes
       while (newNodes.length < n) {
