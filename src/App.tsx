@@ -1,6 +1,5 @@
 import React from 'react';
 import Graph from './components/Graph';
-import { Data } from 'vis-network';
 import Console from './components/Console';
 import { GraphData } from './types';
 
