@@ -2,18 +2,22 @@ import Card from '@mui/joy/Card';
 import React from 'react';
 import Typography from '@mui/joy/Typography';
 import FormLabel from '@mui/joy/FormLabel';
-import { Input, Stack, Box, Button } from '@mui/joy';
-import { GraphData } from '../types';
+import { Input, Stack, Box, Button, ToggleButtonGroup } from '@mui/joy';
+import { GraphData, Algorithm } from '../types';
 import { Edge } from 'vis-network';
 
 interface ConsoleProps {
   graphData: GraphData;
   setGraphData: React.Dispatch<React.SetStateAction<GraphData>>;
+  algorithm: Algorithm;
+  setAlgorithm: React.Dispatch<React.SetStateAction<Algorithm>>;
 }
 
 const Console: React.FC<ConsoleProps> = ({
   graphData,
-  setGraphData
+  setGraphData,
+  algorithm,
+  setAlgorithm
 }) => {
 
   const setNumNodes = (n: number) => {
@@ -70,9 +74,22 @@ const Console: React.FC<ConsoleProps> = ({
     <Card variant="outlined" sx={{ width: 300, position: 'fixed', top: 20, left: 20, zIndex: 100 }}>
       <Typography level='h3' mb={1}>Routing Visualiser</Typography>
 
+      <Typography level='h4'>Routing Algorithm</Typography>
+      <FormLabel>
+        Select algorithm
+        <ToggleButtonGroup
+          sx={{ width: '100%' }}
+          value={algorithm}
+          onChange={(_, value) => setAlgorithm(value ?? "LS")}
+        >
+          <Button sx={{ width: '50%' }} value="LS">Link State</Button>
+          <Button sx={{ width: '50%' }} value="DV" disabled>Distance Vector</Button>
+        </ToggleButtonGroup>
+      </FormLabel>
+
       <Typography level='h4'>Nodes</Typography>
       <FormLabel>
-        Number of Nodes
+        Number of nodes
         <Input
           fullWidth
           type="number"
