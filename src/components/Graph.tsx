@@ -1,18 +1,13 @@
 import React from 'react';
 import { Network } from 'vis-network';
-import { Node, NetworkData } from '../types';
+import { useDispatch, useSelector } from '../redux/hooks';
+import { deselectNode, selectNetworkData, selectNode, selectSelectedNode } from '../redux/networkSlice';
 
-interface GraphProps {
-  data: NetworkData;
-  selectedNode: Node | null;
-  setSelectedNode: React.Dispatch<React.SetStateAction<Node | null>>;
-}
+const Graph = () => {
+  const dispatch = useDispatch();
+  const data = useSelector(selectNetworkData);
+  const selectedNode = useSelector(selectSelectedNode);
 
-const Graph: React.FC<GraphProps> = ({
-  data,
-  selectedNode,
-  setSelectedNode
-}) => {
   const containerRef = React.useRef(null);
   const [network, setNetwork] = React.useState<Network>();
 
@@ -55,17 +50,17 @@ const Graph: React.FC<GraphProps> = ({
       if (!selected) {
         // Deselect node
         network.selectNodes([]);
-        setSelectedNode(null);
+        dispatch(deselectNode());
       } else {
         // Highlight node/forwarding paths, display info
         network.selectNodes([selected.id], false);
-        setSelectedNode(selected);
+        dispatch(selectNode(selected));
       }
     }
 
     network.on('click', handleClick);
     return () => network.off('click', handleClick);
-  }, [network, data, setSelectedNode]);
+  }, [network, data, dispatch]);
 
   // Redraw on new data
   React.useEffect(() => {

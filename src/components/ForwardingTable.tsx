@@ -1,19 +1,11 @@
 import Card from '@mui/joy/Card';
 import React from 'react';
 import Typography from '@mui/joy/Typography';
-import { NetworkData, Algorithm, Node } from '../types';
+import { useSelector } from '../redux/hooks';
+import { selectSelectedNode } from '../redux/networkSlice';
 
-interface ForwardingTableProps {
-  networkData: NetworkData;
-  algorithm: Algorithm;
-  selectedNode: Node | null;
-}
-
-const ForwardingTable: React.FC<ForwardingTableProps> = ({
-  networkData,
-  algorithm,
-  selectedNode
-}) => {
+const ForwardingTable = () => {
+  const selectedNode = useSelector(selectSelectedNode);
 
   return (
     <Card variant="outlined" sx={{ width: 300, position: 'fixed', top: 20, right: 20, zIndex: 100 }}>

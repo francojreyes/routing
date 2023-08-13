@@ -3,72 +3,17 @@ import React from 'react';
 import Typography from '@mui/joy/Typography';
 import FormLabel from '@mui/joy/FormLabel';
 import { Input, Stack, Box, Button, ToggleButtonGroup } from '@mui/joy';
-import { NetworkData, Algorithm } from '../types';
-import { Edge } from 'vis-network';
+import { useDispatch, useSelector } from '../redux/hooks';
+import { selectAlgorithm, selectNetworkData, setAlgorithm, setNumNodes, updateEdge } from '../redux/networkSlice';
 
-interface ConsoleProps {
-  networkData: NetworkData;
-  setNetworkData: React.Dispatch<React.SetStateAction<NetworkData>>;
-  algorithm: Algorithm;
-  setAlgorithm: React.Dispatch<React.SetStateAction<Algorithm>>;
-}
-
-const Console: React.FC<ConsoleProps> = ({
-  networkData,
-  setNetworkData,
-  algorithm,
-  setAlgorithm
-}) => {
-
-  const setNumNodes = (n: number) => {
-    if (isNaN(n) || n < 2) return;
-    const newNodes = [...networkData.nodes];
-    if (n > newNodes.length) {
-      // Add nodes
-      while (newNodes.length < n) {
-        newNodes.push({
-          id: newNodes.length,
-          label: newNodes.length.toString(),
-          shape: 'circle'
-        });
-      }
-      setNetworkData(curr => ({ ...curr, nodes: newNodes }));
-    } else {
-      // Take the first n nodes, and remove all edges to removed nodes
-      setNetworkData(curr => ({
-        nodes: curr.nodes.slice(0, n),
-        edges: curr.edges.filter(edge => edge.from <= n && edge.to <= n)
-      }));
-    }
-  }
+const Console = () => {
+  const dispatch = useDispatch();
+  const networkData = useSelector(selectNetworkData);
+  const algorithm = useSelector(selectAlgorithm);
 
   const [from, setFrom] = React.useState(0);
   const [to, setTo] = React.useState(1);
   const [cost, setCost] = React.useState(1);
-
-  const updateEdge = React.useCallback(() => setNetworkData(curr => {
-    let newEdges = [...curr.edges];
-    if (cost === 0) {
-      // Remove edge
-      newEdges = newEdges.filter(edge => !matchingEdge(edge, from, to));
-    } else {
-      const edge = newEdges.find(edge => matchingEdge(edge, from, to));
-      if (edge) {
-        // Update cost
-        edge.label = cost.toString();
-      } else {
-        // New edge
-        newEdges.push({
-          id: Math.max(...newEdges.map(e => e.id)) + 1,
-          from,
-          to,
-          label: cost.toString()
-        });
-      }
-    }
-
-    return { ...curr, edges: newEdges };
-  }), [from, to, cost, setNetworkData]);
 
   return (
     <Card variant="outlined" sx={{ width: 300, position: 'fixed', top: 20, left: 20, zIndex: 100 }}>
@@ -80,7 +25,7 @@ const Console: React.FC<ConsoleProps> = ({
         <ToggleButtonGroup
           sx={{ width: '100%' }}
           value={algorithm}
-          onChange={(_, value) => setAlgorithm(value ?? "LS")}
+          onChange={(_, value) => dispatch(setAlgorithm(value ?? "LS"))}
         >
           <Button sx={{ width: '50%' }} value="LS">Link State</Button>
           <Button sx={{ width: '50%' }} value="DV" disabled>Distance Vector</Button>
@@ -94,13 +39,8 @@ const Console: React.FC<ConsoleProps> = ({
           fullWidth
           type="number"
           value={networkData.nodes.length}
-          onChange={e => setNumNodes(e.target.valueAsNumber)}
-          slotProps={{
-            input: {
-              min: 2,
-              step: 1
-            },
-          }}
+          onChange={e => dispatch(setNumNodes(e.target.valueAsNumber))}
+          slotProps={{ input: { min: 2, step: 1 }, }}
         />
       </FormLabel>
 
@@ -125,14 +65,10 @@ const Console: React.FC<ConsoleProps> = ({
           </Box>
         ))}
       </Stack>
-      <Button onClick={updateEdge}>Update Edge</Button>
+      <Button onClick={() => dispatch(updateEdge({ from, to, cost }))}>Update Edge</Button>
 
     </Card>
   )
-}
-
-const matchingEdge = (e: Edge, u: number, v: number): boolean => {
-  return (e.from === u && e.to === v) || (e.from === v && e.to === u);
 }
 
 export default Console;
