@@ -1,17 +1,17 @@
 import React from 'react';
 import Graph from './components/Graph';
 import Console from './components/Console';
-import { Algorithm, GraphData, Node } from './types';
+import { Algorithm, NetworkData, Node } from './types';
 import ForwardingTable from './components/ForwardingTable';
 
 function App() {
-  const [graphData, setGraphData] = React.useState<GraphData>({
+  const [networkData, setNetworkData] = React.useState<NetworkData>({
     nodes: [
+      { id: 0, label: '0', shape: 'circle' },
       { id: 1, label: '1', shape: 'circle' },
-      { id: 2, label: '2', shape: 'circle' },
     ],
     edges: [
-      { id: 0, from: 1, to: 2, label: '1' },
+      { id: 0, from: 0, to: 1, label: '1' },
     ]
   });
   const [algorithm, setAlgorithm] = React.useState<Algorithm>("LS");
@@ -20,17 +20,18 @@ function App() {
   return (
     <>
       <Console
-        graphData={graphData}
-        setGraphData={setGraphData}
+        networkData={networkData}
+        setNetworkData={setNetworkData}
         algorithm={algorithm}
         setAlgorithm={setAlgorithm}
       />
       <Graph
-        data={graphData}
+        data={networkData}
+        selectedNode={selectedNode}
         setSelectedNode={setSelectedNode}
       />
       <ForwardingTable
-        graphData={graphData}
+        networkData={networkData}
         algorithm={algorithm}
         selectedNode={selectedNode}
       />

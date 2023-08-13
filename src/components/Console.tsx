@@ -3,50 +3,50 @@ import React from 'react';
 import Typography from '@mui/joy/Typography';
 import FormLabel from '@mui/joy/FormLabel';
 import { Input, Stack, Box, Button, ToggleButtonGroup } from '@mui/joy';
-import { GraphData, Algorithm } from '../types';
+import { NetworkData, Algorithm } from '../types';
 import { Edge } from 'vis-network';
 
 interface ConsoleProps {
-  graphData: GraphData;
-  setGraphData: React.Dispatch<React.SetStateAction<GraphData>>;
+  networkData: NetworkData;
+  setNetworkData: React.Dispatch<React.SetStateAction<NetworkData>>;
   algorithm: Algorithm;
   setAlgorithm: React.Dispatch<React.SetStateAction<Algorithm>>;
 }
 
 const Console: React.FC<ConsoleProps> = ({
-  graphData,
-  setGraphData,
+  networkData,
+  setNetworkData,
   algorithm,
   setAlgorithm
 }) => {
 
   const setNumNodes = (n: number) => {
     if (isNaN(n) || n < 2) return;
-    const newNodes = [...graphData.nodes];
+    const newNodes = [...networkData.nodes];
     if (n > newNodes.length) {
       // Add nodes
       while (newNodes.length < n) {
         newNodes.push({
-          id: newNodes.length + 1,
-          label: (newNodes.length + 1).toString(),
+          id: newNodes.length,
+          label: newNodes.length.toString(),
           shape: 'circle'
         });
       }
-      setGraphData(curr => ({ ...curr, nodes: newNodes }));
+      setNetworkData(curr => ({ ...curr, nodes: newNodes }));
     } else {
       // Take the first n nodes, and remove all edges to removed nodes
-      setGraphData(curr => ({
+      setNetworkData(curr => ({
         nodes: curr.nodes.slice(0, n),
         edges: curr.edges.filter(edge => edge.from <= n && edge.to <= n)
       }));
     }
   }
 
-  const [from, setFrom] = React.useState(1);
-  const [to, setTo] = React.useState(2);
+  const [from, setFrom] = React.useState(0);
+  const [to, setTo] = React.useState(1);
   const [cost, setCost] = React.useState(1);
 
-  const updateEdge = React.useCallback(() => setGraphData(curr => {
+  const updateEdge = React.useCallback(() => setNetworkData(curr => {
     let newEdges = [...curr.edges];
     if (cost === 0) {
       // Remove edge
@@ -68,7 +68,7 @@ const Console: React.FC<ConsoleProps> = ({
     }
 
     return { ...curr, edges: newEdges };
-  }), [from, to, cost, setGraphData]);
+  }), [from, to, cost, setNetworkData]);
 
   return (
     <Card variant="outlined" sx={{ width: 300, position: 'fixed', top: 20, left: 20, zIndex: 100 }}>
@@ -93,7 +93,7 @@ const Console: React.FC<ConsoleProps> = ({
         <Input
           fullWidth
           type="number"
-          value={graphData.nodes.length}
+          value={networkData.nodes.length}
           onChange={e => setNumNodes(e.target.valueAsNumber)}
           slotProps={{
             input: {
@@ -107,8 +107,8 @@ const Console: React.FC<ConsoleProps> = ({
       <Typography level='h4'>Edges</Typography>
       <Stack direction='row' width='100%' justifyContent='space-between'>
         {[
-          { label: 'From', value: from, setValue: setFrom, inputProps: { min: 1, max: graphData.nodes.length, step: 1 } },
-          { label: 'To', value: to, setValue: setTo, inputProps: { min: 1, max: graphData.nodes.length, step: 1 } },
+          { label: 'From', value: from, setValue: setFrom, inputProps: { min: 0, max: networkData.nodes.length - 1, step: 1 } },
+          { label: 'To', value: to, setValue: setTo, inputProps: { min: 0, max: networkData.nodes.length - 1, step: 1 } },
           { label: 'Cost', value: cost, setValue: setCost, inputProps: { min: 0, step: 1 } }
         ].map(({ label, value, setValue, inputProps }) => (
           <Box width='32%' key={label}>
