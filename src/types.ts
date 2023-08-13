@@ -19,10 +19,10 @@ export interface NetworkData {
 export type Algorithm = 'LS' | 'DV';
 
 export type RoutingData = {
-  type: 'LS';
+  algorithm: 'LS';
   data: LinkStateData;
 } | {
-  type: 'DV';
+  algorithm: 'DV';
   data: DistanceVectorData;
 }
 

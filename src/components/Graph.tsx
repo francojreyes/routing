@@ -1,12 +1,21 @@
 import React from 'react';
 import { Network } from 'vis-network';
 import { useDispatch, useSelector } from '../redux/hooks';
-import { deselectNode, selectNetworkData, selectNode, selectSelectedNode } from '../redux/networkSlice';
+import {
+  deselectNode,
+  selectNetworkData,
+  selectNode,
+  selectRoutingData,
+  selectSelectedNode
+} from '../redux/networkSlice';
+import { matchingEdge } from '../utils/helpers';
+import { Edge, RoutingData } from '../types';
 
 const Graph = () => {
   const dispatch = useDispatch();
   const data = useSelector(selectNetworkData);
   const selectedNode = useSelector(selectSelectedNode);
+  const routingData = useSelector(selectRoutingData);
 
   const containerRef = React.useRef(null);
   const [network, setNetwork] = React.useState<Network>();
@@ -23,7 +32,7 @@ const Graph = () => {
       },
       edges: {
         color: {
-          highlight: 'blue'
+          highlight: 'red'
         },
         selectionWidth: 2
       }
@@ -34,6 +43,8 @@ const Graph = () => {
 
     return () => newNetwork.destroy();
   }, []);
+
+  console.log(network?.getSelectedEdges());
 
   // Add callbacks
   React.useEffect(() => {
@@ -49,33 +60,55 @@ const Graph = () => {
 
       if (!selected) {
         // Deselect node
-        network.selectNodes([]);
         dispatch(deselectNode());
       } else {
-        // Highlight node/forwarding paths, display info
-        network.selectNodes([selected.id], false);
         dispatch(selectNode(selected));
       }
     }
 
     network.on('click', handleClick);
     return () => network.off('click', handleClick);
-  }, [network, data, dispatch]);
+  }, [network, data, dispatch, routingData]);
 
   // Redraw on new data
   React.useEffect(() => {
-    if (network) network.setData(data);
+    if (network) {
+      network.setData(data);
+    }
   }, [network, data]);
 
   // Make sure selected node stays selected on data change
   React.useEffect(() => {
-    if (!network) return;
-    if (selectedNode && !network.getSelectedNodes().length) {
-      network.selectNodes([selectedNode.id], false);
+    if (network && selectedNode) {
+      network.setSelection({
+        nodes: [selectedNode.id],
+        edges: getRouteEdges(data.edges, routingData, selectedNode.id)
+      });
     }
-  }, [network, data, selectedNode])
+  }, [network, data, selectedNode, routingData]);
 
   return <div ref={containerRef} style={{ width: '100%', height: '100%' }} />;
 };
+
+const getRouteEdges = (
+  edges: Edge[],
+  routingData: RoutingData,
+  node: number
+): number[] => {
+  if (routingData.algorithm === "LS") {
+    const iterations = routingData.data[node];
+    const final = iterations[iterations.length - 1];
+
+    const selectedEdges: number[] = [];
+    for (let i = 0; i < final.pred.length; i++) {
+      const edge = edges.find(e => matchingEdge(e, i, final.pred[i]));
+      if (edge) selectedEdges.push(edge.id);
+    }
+
+    return selectedEdges;
+  } else {
+    return [];
+  }
+}
 
 export default Graph;

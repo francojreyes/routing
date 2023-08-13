@@ -4,13 +4,14 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { RootState } from "./store";
-import { Algorithm, NetworkData, Node } from '../types';
-import { Edge } from 'vis-network';
+import { Algorithm, NetworkData, Node, RoutingData } from '../types';
+import { calculateLinkStateData } from '../utils/linkstate';
+import { matchingEdge } from '../utils/helpers';
 
 interface NetworkState {
   data: NetworkData;
-  algorithm: Algorithm;
   selectedNode: Node | null;
+  routing: RoutingData;
 }
 
 const initialState: NetworkState = {
@@ -23,8 +24,22 @@ const initialState: NetworkState = {
       { id: 0, from: 0, to: 1, label: '1' },
     ]
   },
-  algorithm: 'LS',
-  selectedNode: null
+  selectedNode: null,
+  routing: {
+    algorithm: "LS",
+    data: [
+      [
+        { vSet: [0, 1], dist: [0, Infinity], pred: [-1, -1] },
+        { vSet: [0], dist: [0, 1], pred: [-1, 0] },
+        { vSet: [], dist: [0, 1], pred: [-1, 0] },
+      ],
+      [
+        { vSet: [0, 1], dist: [Infinity, 0], pred: [-1, -1] },
+        { vSet: [1], dist: [1, 0], pred: [1, -1] },
+        { vSet: [], dist: [1, 0], pred: [1, -1] },
+      ],
+    ]
+  }
 };
 
 const networkSlice = createSlice({
@@ -54,6 +69,8 @@ const networkSlice = createSlice({
           state.selectedNode = null;
         }
       }
+
+      state.routing = calculateRoutingData(state, state.routing.algorithm);
     },
     updateEdge: (state, action: PayloadAction<{ from: number, to: number, cost: number }>) => {
       const { from, to, cost } = action.payload;
@@ -78,6 +95,8 @@ const networkSlice = createSlice({
           });
         }
       }
+
+      state.routing = calculateRoutingData(state, state.routing.algorithm);
     },
     selectNode: (state, action: PayloadAction<Node>) => {
       state.selectedNode = action.payload;
@@ -86,20 +105,29 @@ const networkSlice = createSlice({
       state.selectedNode = null;
     },
     setAlgorithm: (state, action: PayloadAction<Algorithm>) => {
-      state.algorithm = action.payload;
+      state.routing = calculateRoutingData(state, action.payload);
     },
   }
 });
 
-const matchingEdge = (e: Edge, u: number, v: number): boolean => {
-  return (e.from === u && e.to === v) || (e.from === v && e.to === u);
+const calculateRoutingData = (
+  state: NetworkState,
+  algorithm: Algorithm
+): RoutingData => {
+  return {
+    algorithm: "LS",
+    data: calculateLinkStateData(state.data)
+  };
 }
 
 export const { setNumNodes, updateEdge, selectNode, deselectNode, setAlgorithm } = networkSlice.actions;
 
 export const selectNetworkData = (state: RootState) => state.network.data;
 export const selectSelectedNode = (state: RootState) => state.network.selectedNode;
-export const selectAlgorithm = (state: RootState) => state.network.algorithm;
+export const selectAlgorithm = (state: RootState) => state.network.routing.algorithm;
+
+export const selectRoutingData = (state: RootState) => state.network.routing;
+
 
 
 export default networkSlice.reducer;

@@ -1,6 +1,6 @@
 // Calculations for Link State routing
 
-import { DijkstraData, NetworkData, RoutingData } from '../types';
+import { DijkstraData, NetworkData } from '../types';
 
 type Graph = {
   from: number,
@@ -8,12 +8,9 @@ type Graph = {
   weight: number
 }[][];
 
-export const calculateLinkStateData = (network: NetworkData): RoutingData => {
+export const calculateLinkStateData = (network: NetworkData) => {
   const graph = networkToGraph(network);
-  return {
-    type: "LS",
-    data: Array.from({ length: graph.length }, (_, idx) => dijkstra(graph, idx))
-  };
+  return Array.from({ length: graph.length }, (_, idx) => dijkstra(graph, idx));
 }
 
 // Convert network data to an adjacency list graph
