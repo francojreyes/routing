@@ -57,6 +57,8 @@ const networkSlice = createSlice({
     },
     updateEdge: (state, action: PayloadAction<{ from: number, to: number, cost: number }>) => {
       const { from, to, cost } = action.payload;
+      if (from === to) return;
+
       const network = state.data;
       if (cost === 0) {
         // Remove edge
