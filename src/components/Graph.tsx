@@ -77,11 +77,16 @@ const Graph = () => {
 
   // Make sure selected node/edges stays selected on data change
   React.useEffect(() => {
-    if (network && selectedNode) {
-      network.setSelection({
-        nodes: [selectedNode.id],
-        edges: getRouteEdges(data.edges, routingData, selectedNode.id)
-      });
+    if (network) {
+      if (selectedNode) {
+        network.setSelection({
+          nodes: [selectedNode.id],
+          edges: getRouteEdges(data.edges, routingData, selectedNode.id)
+        });
+      } else {
+        network.unselectAll();
+      }
+
     }
   }, [network, data, selectedNode, routingData]);
 
