@@ -62,7 +62,13 @@ const networkSlice = createSlice({
       } else {
         // Take the first n nodes, and remove all edges to removed nodes
         network.nodes = network.nodes.slice(0, n);
-        network.edges = network.edges.filter(edge => edge.from <= n && edge.to <= n);
+        network.edges = network.edges.map(e => {
+          if (e.from < n && e.to < n) {
+            return e;
+          } else {
+            return { ...e, label: '0' }
+          }
+        });
 
         // Unselect
         if (state.selectedNode && state.selectedNode.id >= n) {
@@ -77,23 +83,18 @@ const networkSlice = createSlice({
       if (from === to) return;
 
       const network = state.data;
-      if (cost === 0) {
-        // Remove edge
-        network.edges = network.edges.filter(edge => !matchingEdge(edge, from, to));
+      const edge = network.edges.find(edge => matchingEdge(edge, from, to));
+      if (edge) {
+        // Update cost
+        edge.label = cost.toString();
       } else {
-        const edge = network.edges.find(edge => matchingEdge(edge, from, to));
-        if (edge) {
-          // Update cost
-          edge.label = cost.toString();
-        } else {
-          // New edge
-          network.edges.push({
-            id: Math.max(...network.edges.map(e => e.id)) + 1,
-            from,
-            to,
-            label: cost.toString()
-          });
-        }
+        // New edge
+        network.edges.push({
+          id: network.edges.length,
+          from,
+          to,
+          label: cost.toString()
+        });
       }
 
       state.routing = calculateRoutingData(state, state.routing.algorithm);

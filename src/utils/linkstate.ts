@@ -21,6 +21,7 @@ const networkToGraph = (network: NetworkData): Graph => {
   }
 
   for (const edge of network.edges) {
+    if (edge.label === '0') continue;
     graph[edge.from].push({ from: edge.from, to: edge.to, weight: +edge.label });
     graph[edge.to].push({ from: edge.to, to: edge.from, weight: +edge.label });
   }

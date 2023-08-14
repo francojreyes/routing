@@ -6,7 +6,7 @@ import { Input, Stack, Box, Button, ToggleButtonGroup } from '@mui/joy';
 import { useDispatch, useSelector } from '../redux/hooks';
 import { selectAlgorithm, selectNetworkData, setAlgorithm, setNumNodes, updateEdge } from '../redux/networkSlice';
 
-const Console = () => {
+const Configuration = () => {
   const dispatch = useDispatch();
   const networkData = useSelector(selectNetworkData);
   const algorithm = useSelector(selectAlgorithm);
@@ -17,7 +17,7 @@ const Console = () => {
 
   return (
     <Card variant="outlined" sx={{ width: 300, position: 'fixed', top: 20, left: 20, zIndex: 100 }}>
-      <Typography level='h3' mb={1}>Routing Visualiser</Typography>
+      <Typography level='h3' mb={1}>Configuration</Typography>
 
       <Typography level='h4'>Routing Algorithm</Typography>
       <FormLabel>
@@ -71,4 +71,4 @@ const Console = () => {
   )
 }
 
-export default Console;
+export default Configuration;

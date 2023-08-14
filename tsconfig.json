@@ -18,8 +18,11 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx"
-  },
+    "jsx": "react-jsx",
+    "paths": {
+      "@mui/material": ["./node_modules/@mui/joy"]
+    }
+},
   "include": [
     "src"
   ]
