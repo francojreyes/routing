@@ -4,7 +4,15 @@ import Typography from '@mui/joy/Typography';
 import FormLabel from '@mui/joy/FormLabel';
 import { Input, Stack, Box, Button, ToggleButtonGroup } from '@mui/joy';
 import { useDispatch, useSelector } from '../redux/hooks';
-import { selectAlgorithm, selectNetworkData, setAlgorithm, setNumNodes, updateEdge } from '../redux/networkSlice';
+import {
+  randomiseNetwork,
+  selectAlgorithm,
+  selectNetworkData,
+  setAlgorithm,
+  setNumNodes,
+  updateEdge
+} from '../redux/networkSlice';
+import ShuffleIcon from '@mui/icons-material/Shuffle';
 
 const ConfigurationPane = () => {
   const dispatch = useDispatch();
@@ -17,7 +25,10 @@ const ConfigurationPane = () => {
 
   return (
     <Card variant="outlined" sx={{ width: 300, position: 'fixed', top: 20, left: 20, zIndex: 100 }}>
-      <Typography level='h3' mb={1}>Configuration</Typography>
+      <Typography level='h3'>Configuration</Typography>
+      <Button startDecorator={<ShuffleIcon/>} onClick={() => dispatch(randomiseNetwork())}>
+        Randomise Network
+      </Button>
 
       <Typography level='h4'>Routing Algorithm</Typography>
       <FormLabel>

@@ -5,8 +5,9 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { RootState } from "./store";
 import { Algorithm, NetworkData, Node, RoutingData } from '../types';
-import { calculateLinkStateData } from '../utils/linkstate';
+import { calculateLinkStateData } from '../utils/linkState';
 import { matchingEdge } from '../utils/helpers';
+import { generateRandomNetwork } from '../utils/randomNetwork';
 
 interface NetworkState {
   data: NetworkData;
@@ -84,6 +85,11 @@ const networkSlice = createSlice({
         });
       }
     },
+    randomiseNetwork: (state) => {
+      state.data = generateRandomNetwork();
+      state.selectedNode = null;
+      state.routing = { algorithm: "LS", data: null };
+    },
     selectNode: (state, action: PayloadAction<Node>) => {
       state.selectedNode = action.payload;
     },
@@ -109,7 +115,15 @@ const calculateRoutingData = (
   };
 }
 
-export const { setNumNodes, updateEdge, selectNode, deselectNode, setAlgorithm, iterate } = networkSlice.actions;
+export const {
+  setNumNodes,
+  updateEdge,
+  randomiseNetwork,
+  selectNode,
+  deselectNode,
+  setAlgorithm,
+  iterate
+} = networkSlice.actions;
 
 export const selectNetworkData = (state: RootState) => state.network.data;
 export const selectSelectedNode = (state: RootState) => state.network.selectedNode;
