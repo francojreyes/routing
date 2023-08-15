@@ -27,18 +27,7 @@ const initialState: NetworkState = {
   selectedNode: null,
   routing: {
     algorithm: "LS",
-    data: [
-      [
-        { vSet: [0, 1], dist: [0, Infinity], pred: [-1, -1] },
-        { vSet: [0], dist: [0, 1], pred: [-1, 0] },
-        { vSet: [], dist: [0, 1], pred: [-1, 0] },
-      ],
-      [
-        { vSet: [0, 1], dist: [Infinity, 0], pred: [-1, -1] },
-        { vSet: [1], dist: [1, 0], pred: [1, -1] },
-        { vSet: [], dist: [1, 0], pred: [1, -1] },
-      ],
-    ]
+    data: null
   }
 };
 
@@ -75,8 +64,6 @@ const networkSlice = createSlice({
           state.selectedNode = null;
         }
       }
-
-      state.routing = calculateRoutingData(state, state.routing.algorithm);
     },
     updateEdge: (state, action: PayloadAction<{ from: number, to: number, cost: number }>) => {
       const { from, to, cost } = action.payload;
@@ -96,8 +83,6 @@ const networkSlice = createSlice({
           label: cost.toString()
         });
       }
-
-      state.routing = calculateRoutingData(state, state.routing.algorithm);
     },
     selectNode: (state, action: PayloadAction<Node>) => {
       state.selectedNode = action.payload;
@@ -106,8 +91,11 @@ const networkSlice = createSlice({
       state.selectedNode = null;
     },
     setAlgorithm: (state, action: PayloadAction<Algorithm>) => {
-      state.routing = calculateRoutingData(state, action.payload);
+      state.routing = { algorithm: "LS", data: null };
     },
+    iterate: (state) => {
+      state.routing = calculateRoutingData(state, state.routing.algorithm);
+    }
   }
 });
 
@@ -121,7 +109,7 @@ const calculateRoutingData = (
   };
 }
 
-export const { setNumNodes, updateEdge, selectNode, deselectNode, setAlgorithm } = networkSlice.actions;
+export const { setNumNodes, updateEdge, selectNode, deselectNode, setAlgorithm, iterate } = networkSlice.actions;
 
 export const selectNetworkData = (state: RootState) => state.network.data;
 export const selectSelectedNode = (state: RootState) => state.network.selectedNode;

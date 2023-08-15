@@ -20,10 +20,10 @@ export type Algorithm = 'LS' | 'DV';
 
 export type RoutingData = {
   algorithm: 'LS';
-  data: LinkStateData;
+  data: LinkStateData | null;
 } | {
   algorithm: 'DV';
-  data: DistanceVectorData;
+  data: DistanceVectorData | null;
 }
 
 export type LinkStateData = DijkstraData[][];
@@ -39,7 +39,7 @@ export type DistanceVector = Array<{
   next: number;
 }>;
 
-export interface DistanceVectorData {
+export type DistanceVectorData = Array<{
   neighbours: DistanceVector[];
   self: DistanceVector;
-}
+}>;

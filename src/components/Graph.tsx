@@ -63,7 +63,7 @@ const Graph = () => {
       },
       edges: {
         color: {
-          highlight: 'red'
+          highlight: 'blue'
         },
         selectionWidth: 2
       }
@@ -122,6 +122,8 @@ const getRouteEdges = (
   routingData: RoutingData,
   node: number
 ): number[] => {
+  if (!routingData.data || !routingData.data[node]) return [];
+
   if (routingData.algorithm === "LS") {
     const iterations = routingData.data[node];
     const final = iterations[iterations.length - 1];
