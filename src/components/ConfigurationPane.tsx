@@ -6,7 +6,7 @@ import { Input, Stack, Box, Button, ToggleButtonGroup } from '@mui/joy';
 import { useDispatch, useSelector } from '../redux/hooks';
 import { selectAlgorithm, selectNetworkData, setAlgorithm, setNumNodes, updateEdge } from '../redux/networkSlice';
 
-const Configuration = () => {
+const ConfigurationPane = () => {
   const dispatch = useDispatch();
   const networkData = useSelector(selectNetworkData);
   const algorithm = useSelector(selectAlgorithm);
@@ -24,6 +24,7 @@ const Configuration = () => {
         Select algorithm
         <ToggleButtonGroup
           sx={{ width: '100%' }}
+          size='md'
           value={algorithm}
           onChange={(_, value) => dispatch(setAlgorithm(value ?? "LS"))}
         >
@@ -71,4 +72,4 @@ const Configuration = () => {
   )
 }
 
-export default Configuration;
+export default ConfigurationPane;

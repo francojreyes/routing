@@ -1,17 +1,20 @@
 import React from 'react';
 import Graph from './components/Graph';
-import Configuration from './components/Configuration';
-import Simulation from './components/Simulation';
+import ConfigurationPane from './components/ConfigurationPane';
+import SimulationPane from './components/SimulationPane';
 import { Provider } from 'react-redux';
 import store from './redux/store';
+import { CssBaseline } from '@mui/joy';
 
 function App() {
   return (
-    <Provider store={store}>
-      <Configuration/>
-      <Graph/>
-      <Simulation/>
-    </Provider>
+    <CssBaseline>
+      <Provider store={store}>
+        <ConfigurationPane/>
+        <Graph/>
+        <SimulationPane/>
+      </Provider>
+    </CssBaseline>
   );
 }
 

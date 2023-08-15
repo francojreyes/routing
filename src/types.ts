@@ -26,6 +26,14 @@ export type RoutingData = {
   data: DistanceVectorData | null;
 }
 
+export type NonNullRoutingData = {
+  algorithm: 'LS';
+  data: LinkStateData;
+} | {
+  algorithm: 'DV';
+  data: DistanceVectorData;
+}
+
 export type LinkStateData = DijkstraData[][];
 
 export interface DijkstraData {
@@ -43,3 +51,8 @@ export type DistanceVectorData = Array<{
   neighbours: DistanceVector[];
   self: DistanceVector;
 }>;
+
+export interface ForwardingTableRow {
+  dist: number;
+  next: string;
+}

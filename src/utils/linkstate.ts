@@ -1,6 +1,6 @@
 // Calculations for Link State routing
 
-import { DijkstraData, NetworkData } from '../types';
+import { DijkstraData, ForwardingTableRow, LinkStateData, NetworkData } from '../types';
 
 type Graph = {
   from: number,
@@ -11,6 +11,30 @@ type Graph = {
 export const calculateLinkStateData = (network: NetworkData) => {
   const graph = networkToGraph(network);
   return Array.from({ length: graph.length }, (_, idx) => dijkstra(graph, idx));
+}
+
+export const calculateLSRow = (
+  data: LinkStateData,
+  src: number,
+  dest: number
+): ForwardingTableRow => {
+  const final = data[src][data[src].length - 1];
+  if (dest >= final.pred.length) {
+    return {
+      dist: Infinity,
+      next: "-"
+    }
+  }
+
+  let curr = dest;
+  while (final.pred[curr] !== src) {
+    curr = final.pred[curr];
+  }
+
+  return {
+    dist: final.dist[dest],
+    next: `Node ${curr}`
+  }
 }
 
 // Convert network data to an adjacency list graph
