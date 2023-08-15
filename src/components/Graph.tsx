@@ -1,6 +1,8 @@
 import React from 'react';
 import { Network } from 'vis-network';
 import { DataSet } from 'vis-data';
+
+import { Edge, Node, RoutingData } from '../types';
 import { useDispatch, useSelector } from '../redux/hooks';
 import {
   deselectNode,
@@ -10,7 +12,6 @@ import {
   selectSelectedNode
 } from '../redux/networkSlice';
 import { matchingEdge } from '../utils/helpers';
-import { Edge, Node, RoutingData } from '../types';
 
 const Graph = () => {
   const dispatch = useDispatch();

@@ -1,8 +1,14 @@
-import Card from '@mui/joy/Card';
 import React from 'react';
-import Typography from '@mui/joy/Typography';
+import Box from '@mui/joy/Box';
+import Button from '@mui/joy/Button';
+import Card from '@mui/joy/Card';
 import FormLabel from '@mui/joy/FormLabel';
-import { Input, Stack, Box, Button, ToggleButtonGroup } from '@mui/joy';
+import Input from '@mui/joy/Input';
+import Stack from '@mui/joy/Stack';
+import ToggleButtonGroup from '@mui/joy/ToggleButtonGroup';
+import Typography from '@mui/joy/Typography';
+import ShuffleIcon from '@mui/icons-material/Shuffle';
+
 import { useDispatch, useSelector } from '../redux/hooks';
 import {
   randomiseNetwork,
@@ -12,16 +18,30 @@ import {
   setNumNodes,
   updateEdge
 } from '../redux/networkSlice';
-import ShuffleIcon from '@mui/icons-material/Shuffle';
 
 const ConfigurationPane = () => {
   const dispatch = useDispatch();
   const networkData = useSelector(selectNetworkData);
   const algorithm = useSelector(selectAlgorithm);
 
+  const [num, setNum] = React.useState(2);
+
+  // Sync with network data
+  React.useEffect(() => {
+    setNum(networkData.nodes.length);
+  }, [networkData.nodes]);
+
+  React.useEffect(() => {
+    if (!isNaN(num) && num >= 2 && num !== networkData.nodes.length) {
+      dispatch(setNumNodes(num));
+    }
+  }, [num, dispatch]);
+
   const [from, setFrom] = React.useState(0);
   const [to, setTo] = React.useState(1);
   const [cost, setCost] = React.useState(1);
+
+
 
   return (
     <Card variant="outlined" sx={{ width: 300, position: 'fixed', top: 20, left: 20, zIndex: 100 }}>
@@ -50,8 +70,8 @@ const ConfigurationPane = () => {
         <Input
           fullWidth
           type="number"
-          value={networkData.nodes.length}
-          onChange={e => dispatch(setNumNodes(e.target.valueAsNumber))}
+          value={num}
+          onChange={e => setNum(e.target.valueAsNumber)}
           slotProps={{ input: { min: 2, step: 1 }, }}
         />
       </FormLabel>

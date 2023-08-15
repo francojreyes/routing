@@ -39,7 +39,6 @@ const networkSlice = createSlice({
     setNumNodes: (state, action: PayloadAction<number>) => {
       const n = action.payload;
       const network = state.data;
-      if (isNaN(n) || n < 2) return;
       if (n > network.nodes.length) {
         // Add nodes
         while (network.nodes.length < n) {

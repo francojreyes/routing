@@ -1,10 +1,11 @@
 import React from 'react';
-import { useSelector } from '../redux/hooks';
-import { selectNetworkData, selectRoutingData } from '../redux/networkSlice';
 import Table from '@mui/joy/Table';
-import { calculateLSRow } from '../utils/linkState';
 import Typography from '@mui/joy/Typography';
+
 import { NonNullRoutingData } from '../types';
+import { selectNetworkData, selectRoutingData } from '../redux/networkSlice';
+import { calculateLSRow } from '../utils/linkState';
+import { useSelector } from '../redux/hooks';
 
 interface ForwardingTableProps {
   nodeId: number;

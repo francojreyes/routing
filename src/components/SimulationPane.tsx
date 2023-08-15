@@ -1,11 +1,12 @@
-import Card from '@mui/joy/Card';
 import React from 'react';
+import Button from '@mui/joy/Button';
+import Card from '@mui/joy/Card';
 import Typography from '@mui/joy/Typography';
+import SkipNextIcon from '@mui/icons-material/SkipNext';
+
+import ForwardingTable from './ForwardingTable';
 import { useDispatch, useSelector } from '../redux/hooks';
 import { iterate, selectSelectedNode } from '../redux/networkSlice';
-import { Button } from '@mui/joy';
-import SkipNextIcon from '@mui/icons-material/SkipNext';
-import ForwardingTable from './ForwardingTable';
 
 const SimulationPane = () => {
   const selectedNode = useSelector(selectSelectedNode);
