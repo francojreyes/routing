@@ -19,7 +19,7 @@ export const calculateLSRow = (
   dest: number
 ): ForwardingTableRow => {
   const final = data[src][data[src].length - 1];
-  if (dest >= final.pred.length) {
+  if (!final || dest >= final.pred.length || final.dist[dest] === Infinity) {
     return {
       dist: Infinity,
       next: "-"
@@ -27,7 +27,7 @@ export const calculateLSRow = (
   }
 
   let curr = dest;
-  while (final.pred[curr] !== src) {
+  while (curr !== -1 && final.pred[curr] !== src) {
     curr = final.pred[curr];
   }
 
@@ -66,6 +66,7 @@ const dijkstra = (graph: Graph, src: number): DijkstraData[] => {
   const iterations = [structuredClone(curr)];
   while (curr.vSet.length) {
     const v = minBy(curr.vSet, v => curr.dist[v]);
+    if (curr.dist[v] === Infinity) break;
 
     for (const edge of graph[v]) {
       if (curr.dist[v] + edge.weight < curr.dist[edge.to]) {
