@@ -135,7 +135,7 @@ const getRouteEdges = (
     const selectedEdges: number[] = [];
     for (let i = 0; i < final.pred.length; i++) {
       const edge = edges.find(e => matchingEdge(e, i, final.pred[i]));
-      if (edge) selectedEdges.push(edge.id);
+      if (edge && edge.label !== '0') selectedEdges.push(edge.id);
     }
 
     return selectedEdges;
