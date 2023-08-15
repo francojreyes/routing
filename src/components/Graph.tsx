@@ -38,6 +38,7 @@ const Graph = () => {
     }
 
     // Add edges and hide zeroes
+    edges.clear();
     edges.update(data.edges);
     edges.remove(data.edges.filter(e => e.label === '0').map(e => e.id));
 
@@ -66,6 +67,9 @@ const Graph = () => {
           highlight: 'blue'
         },
         selectionWidth: 2
+      },
+      physics: {
+        solver: 'barnesHut'
       }
     };
 

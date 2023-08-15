@@ -7,7 +7,7 @@ type Line = { v: number, w: number, weight: number }
 // From https://stackoverflow.com/a/71010232
 export const generateRandomNetwork = (): NetworkData => {
   // Randomly generate number of nodes
-  const n = randInt(5, 10);
+  const n = randInt(5, 9);
 
   // Assign random x,y locations to the nodes
   const nodes: Point[] =
