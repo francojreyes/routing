@@ -27,7 +27,7 @@ const ForwardingTable: React.FC<ForwardingTableProps> = ({ nodeId }) => {
     if (data.algorithm === "LS") {
       return calculateLSRow(data.data, nodeId, dest);
     } else {
-      return { dist: -1, next: -1 };
+      return { dist: Infinity, next: '-' };
     }
   }
 

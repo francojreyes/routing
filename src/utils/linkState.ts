@@ -1,6 +1,7 @@
 // Calculations for Link State routing
 
 import { DijkstraData, ForwardingTableRow, LinkStateData, NetworkData } from '../types';
+import { minBy, range, replicate } from './helpers';
 
 type Graph = {
   from: number,
@@ -10,7 +11,7 @@ type Graph = {
 
 export const calculateLinkStateData = (network: NetworkData) => {
   const graph = networkToGraph(network);
-  return Array.from({ length: graph.length }, (_, idx) => dijkstra(graph, idx));
+  return range(graph.length).map(node => dijkstra(graph, node));
 }
 
 export const calculateLSRow = (
@@ -57,15 +58,23 @@ const networkToGraph = (network: NetworkData): Graph => {
 const dijkstra = (graph: Graph, src: number): DijkstraData[] => {
   const nV = graph.length;
   const curr: DijkstraData = {
-    vSet: Array.from({ length: nV }, (_, idx) => idx),
-    dist: Array.from({ length: nV }, () => Infinity),
-    pred: Array.from({ length: nV }, () => -1)
+    vSet: [],
+    dist: replicate(nV, Infinity),
+    pred: replicate(nV, -1)
   }
+
+  // Initialisation step (3331 variant)
+  curr.vSet.push(src);
   curr.dist[src] = 0;
+  for (const edge of graph[src]) {
+    curr.dist[edge.to] = edge.weight;
+    curr.pred[edge.to] = src;
+  }
 
   const iterations = [structuredClone(curr)];
-  while (curr.vSet.length) {
-    const v = minBy(curr.vSet, v => curr.dist[v]);
+  while (curr.vSet.length < nV) {
+    const unused = range(nV).filter(v => !curr.vSet.includes(v));
+    const v = minBy(unused, v => curr.dist[v]);
     if (curr.dist[v] === Infinity) break;
 
     for (const edge of graph[v]) {
@@ -75,24 +84,10 @@ const dijkstra = (graph: Graph, src: number): DijkstraData[] => {
       }
     }
 
-    curr.vSet = removeItem(curr.vSet, v);
+    curr.vSet.push(v);
     iterations.push(structuredClone(curr));
   }
 
   return iterations;
 }
 
-// Helper function to get the minimum in an array by some criteria
-const minBy = <T>(arr: T[], keyFunc: (item: T) => number): T => {
-  return arr.reduce((min, curr) => {
-    return keyFunc(curr) < keyFunc(min) ? curr : min;
-  }, arr[0]);
-}
-
-const removeItem = <T>(arr: Array<T>, value: T): Array<T> => {
-  const index = arr.indexOf(value);
-  if (index > -1) {
-    arr.splice(index, 1);
-  }
-  return arr;
-}

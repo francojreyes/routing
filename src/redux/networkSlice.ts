@@ -6,7 +6,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "./store";
 import { Algorithm, NetworkData, Node, RoutingData } from '../types';
 import { calculateLinkStateData } from '../utils/linkState';
-import { matchingEdge } from '../utils/helpers';
+import { matchingEdge, range } from '../utils/helpers';
 import { generateRandomNetwork } from '../utils/randomNetwork';
 
 interface NetworkState {
@@ -41,13 +41,11 @@ const networkSlice = createSlice({
       const network = state.data;
       if (n > network.nodes.length) {
         // Add nodes
-        while (network.nodes.length < n) {
-          network.nodes.push({
-            id: network.nodes.length,
-            label: network.nodes.length.toString(),
-            shape: 'circle'
-          });
-        }
+        network.nodes.push(...range(network.nodes.length, n).map(i => ({
+          id: i,
+          label: i.toString(),
+          shape: 'circle'
+        } as Node)));
       } else {
         // Take the first n nodes, and remove all edges to removed nodes
         network.nodes = network.nodes.slice(0, n);

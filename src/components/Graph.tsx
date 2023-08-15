@@ -11,7 +11,7 @@ import {
   selectRoutingData,
   selectSelectedNode
 } from '../redux/networkSlice';
-import { matchingEdge } from '../utils/helpers';
+import { matchingEdge, range } from '../utils/helpers';
 
 const Graph = () => {
   const dispatch = useDispatch();
@@ -32,10 +32,7 @@ const Graph = () => {
       nodes.update(data.nodes);
     } else {
       // Remove excess nodes
-      nodes.remove(Array.from(
-        { length: nodes.length - data.nodes.length },
-        (_, idx) => data.nodes.length + idx
-      ));
+      nodes.remove(range(data.nodes.length, nodes.length));
     }
 
     // Add edges and hide zeroes
