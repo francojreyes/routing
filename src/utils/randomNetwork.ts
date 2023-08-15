@@ -30,12 +30,11 @@ export const generateRandomNetwork = (): NetworkData => {
       .map((_, idx) => idx)
       .filter(node => node !== v)
       .sort(() => Math.random() * 2 - 1)
-      .slice(0, Math.floor(0.5 * n));
+      .slice(0, Math.ceil(0.4 * n));
     for (const w of ws) {
       // Check if edge v-w intersects previous edges
       const newEdge = { v, w, weight: randInt(1, 6) };
       if (edges.every(edge => !intersect(edge, newEdge, nodes))) {
-        console.log(`Adding edge ${v} to ${w}`)
         edges.push(newEdge);
       }
     }
