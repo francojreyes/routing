@@ -99,7 +99,7 @@ const networkSlice = createSlice({
       state.showCalculations = false;
     },
     setAlgorithm: (state, action: PayloadAction<Algorithm>) => {
-      state.routing = { algorithm: "LS", data: [] };
+      state.routing.algorithm = action.payload;
     },
     iterate: (state) => {
       state.routing = calculateRoutingData(state, state.routing.algorithm);

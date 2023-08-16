@@ -20,20 +20,20 @@ const LSCalculationPane: React.FC<LSCalculationCardProps> = ({
   data
 }) => {
   return (
-    <Card sx={{ width: 450, position: 'fixed', top: 20, left: 20, zIndex: 100, maxHeight: 'calc(100vh - 40px)' }}>
+    <Card sx={{ width: 450, position: 'fixed', top: 20, left: 20, zIndex: 100, maxHeight: 'calc(100vh - 40px)', gap: 0 }}>
       <Stack direction="row" justifyContent="space-between" alignItems="center">
         <Typography level="h3">
           Calculations for Node {nodeId}
         </Typography>
         <CloseIcon onClick={close} sx={{ '&:hover': { cursor: 'pointer' } }}/>
       </Stack>
-      <Divider sx={{ mb: 0 }}/>
+      <Divider sx={{ mt: 1 }}/>
       <Stack
         sx={{
           height: '100%',
+          mx: 'calc(-1 * var(--Card-padding))',
+          px: 'var(--Card-padding)',
           overflow: 'scroll',
-          mx: 'calc(-1 * var(--ModalDialog-padding))',
-          px: 'var(--ModalDialog-padding)',
           py: 1.5
         }}
       >
@@ -49,7 +49,7 @@ const LSCalculationPane: React.FC<LSCalculationCardProps> = ({
         </Stack>
         <Typography level="h4">Calculated Routes</Typography>
         <Typography fontSize="sm" mb={1}>
-          The next node to forward to are found by using the predecessors in
+          The next nodes to forward to are found by using the predecessors in
           the final iteration to calculate the shortest routes from Node {nodeId}:
         </Typography>
         <Table borderAxis="bothBetween" size="sm" variant="outlined">
