@@ -13,6 +13,7 @@ interface NetworkState {
   data: NetworkData;
   selectedNode: Node | null;
   routing: RoutingData;
+  showCalculations: boolean;
 }
 
 const initialState: NetworkState = {
@@ -29,7 +30,8 @@ const initialState: NetworkState = {
   routing: {
     algorithm: "LS",
     data: []
-  }
+  },
+  showCalculations: false
 };
 
 const networkSlice = createSlice({
@@ -60,6 +62,7 @@ const networkSlice = createSlice({
         // Unselect
         if (state.selectedNode && state.selectedNode.id >= n) {
           state.selectedNode = null;
+          state.showCalculations = false;
         }
       }
     },
@@ -85,6 +88,7 @@ const networkSlice = createSlice({
     randomiseNetwork: (state) => {
       state.data = generateRandomNetwork();
       state.selectedNode = null;
+      state.showCalculations = false;
       state.routing = { algorithm: "LS", data: [] };
     },
     selectNode: (state, action: PayloadAction<Node>) => {
@@ -92,13 +96,20 @@ const networkSlice = createSlice({
     },
     deselectNode: (state) => {
       state.selectedNode = null;
+      state.showCalculations = false;
     },
     setAlgorithm: (state, action: PayloadAction<Algorithm>) => {
       state.routing = { algorithm: "LS", data: [] };
     },
     iterate: (state) => {
       state.routing = calculateRoutingData(state, state.routing.algorithm);
-    }
+    },
+    showCalculations: (state) => {
+      state.showCalculations = true;
+    },
+    hideCalculations: (state) => {
+      state.showCalculations = false;
+    },
   }
 });
 
@@ -119,7 +130,9 @@ export const {
   selectNode,
   deselectNode,
   setAlgorithm,
-  iterate
+  iterate,
+  showCalculations,
+  hideCalculations
 } = networkSlice.actions;
 
 export const selectNetworkData = (state: RootState) => state.network.data;
@@ -127,6 +140,8 @@ export const selectSelectedNode = (state: RootState) => state.network.selectedNo
 export const selectAlgorithm = (state: RootState) => state.network.routing.algorithm;
 
 export const selectRoutingData = (state: RootState) => state.network.routing;
+
+export const selectShowCalculations = (state: RootState) => state.network.showCalculations;
 
 
 

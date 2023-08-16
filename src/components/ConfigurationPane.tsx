@@ -24,7 +24,7 @@ const ConfigurationPane = () => {
   const networkData = useSelector(selectNetworkData);
   const algorithm = useSelector(selectAlgorithm);
 
-  const [num, setNum] = React.useState(2);
+  const [num, setNum] = React.useState(networkData.nodes.length);
 
   // Sync with network data
   React.useEffect(() => {

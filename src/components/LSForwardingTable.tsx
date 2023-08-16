@@ -5,7 +5,8 @@ import Typography from '@mui/joy/Typography';
 import { LinkStateData } from '../types';
 import { calculateLSRow } from '../utils/linkState';
 import { Link, Sheet } from '@mui/joy';
-import LSCalculationModal from './LSCalculationModal';
+import { useDispatch } from '../redux/hooks';
+import { showCalculations } from '../redux/networkSlice';
 
 interface ForwardingTableProps {
   nodeId: number;
@@ -16,7 +17,7 @@ const LSForwardingTable: React.FC<ForwardingTableProps> = ({
   nodeId,
   routingData
 }) => {
-  const [modalOpen, setModalOpen] = React.useState(false);
+  const dispatch = useDispatch();
 
   // Get data for src node
   const nodeData = routingData[nodeId];
@@ -61,18 +62,12 @@ const LSForwardingTable: React.FC<ForwardingTableProps> = ({
           <tfoot>
             <tr>
               <td colSpan={3} style={{ textAlign: 'center' }}>
-                Click <Link onClick={() => setModalOpen(true)}>here</Link> to see calculations
+                Click <Link onClick={() => dispatch(showCalculations())}>here</Link> to see calculations
               </td>
             </tr>
           </tfoot>
         </Table>
       </Sheet>
-      <LSCalculationModal
-        open={modalOpen}
-        setOpen={setModalOpen}
-        nodeId={nodeId}
-        data={nodeData}
-      />
     </>
   )
 }

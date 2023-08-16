@@ -35,8 +35,10 @@ const Graph = () => {
       nodes.remove(range(data.nodes.length, nodes.length));
     }
 
-    // Add edges and hide zeroes
-    edges.clear();
+    // Remove excess edges
+    edges.remove(range(data.edges.length, edges.length))
+
+    // Add/update edges and hide zeroes
     edges.update(data.edges);
     edges.remove(data.edges.filter(e => e.label === '0').map(e => e.id));
 
