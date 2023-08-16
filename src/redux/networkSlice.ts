@@ -28,7 +28,7 @@ const initialState: NetworkState = {
   selectedNode: null,
   routing: {
     algorithm: "LS",
-    data: null
+    data: []
   }
 };
 
@@ -85,7 +85,7 @@ const networkSlice = createSlice({
     randomiseNetwork: (state) => {
       state.data = generateRandomNetwork();
       state.selectedNode = null;
-      state.routing = { algorithm: "LS", data: null };
+      state.routing = { algorithm: "LS", data: [] };
     },
     selectNode: (state, action: PayloadAction<Node>) => {
       state.selectedNode = action.payload;
@@ -94,7 +94,7 @@ const networkSlice = createSlice({
       state.selectedNode = null;
     },
     setAlgorithm: (state, action: PayloadAction<Algorithm>) => {
-      state.routing = { algorithm: "LS", data: null };
+      state.routing = { algorithm: "LS", data: [] };
     },
     iterate: (state) => {
       state.routing = calculateRoutingData(state, state.routing.algorithm);

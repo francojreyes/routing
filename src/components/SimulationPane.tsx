@@ -4,12 +4,13 @@ import Card from '@mui/joy/Card';
 import Typography from '@mui/joy/Typography';
 import SkipNextIcon from '@mui/icons-material/SkipNext';
 
-import ForwardingTable from './ForwardingTable';
+import LSForwardingTable from './LSForwardingTable';
 import { useDispatch, useSelector } from '../redux/hooks';
-import { iterate, selectSelectedNode } from '../redux/networkSlice';
+import { iterate, selectRoutingData, selectSelectedNode } from '../redux/networkSlice';
 
 const SimulationPane = () => {
   const selectedNode = useSelector(selectSelectedNode);
+  const routingData = useSelector(selectRoutingData);
   const dispatch = useDispatch();
 
   return (
@@ -25,7 +26,9 @@ const SimulationPane = () => {
       </Typography>
       {!selectedNode
         ? <Typography level='body-sm'>Select a node to see its forwarding table.</Typography>
-        : <ForwardingTable nodeId={selectedNode.id}/>
+        : routingData.algorithm === "LS"
+          ? <LSForwardingTable nodeId={selectedNode.id} routingData={routingData.data}/>
+          : <Typography>DV Table goes here</Typography>
       }
     </Card>
   )

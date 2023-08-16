@@ -2,34 +2,27 @@ import React from 'react';
 import Table from '@mui/joy/Table';
 import Typography from '@mui/joy/Typography';
 
-import { NonNullRoutingData } from '../types';
-import { selectNetworkData, selectRoutingData } from '../redux/networkSlice';
+import { LinkStateData } from '../types';
 import { calculateLSRow } from '../utils/linkState';
-import { useSelector } from '../redux/hooks';
 import { Link, Sheet } from '@mui/joy';
 
 interface ForwardingTableProps {
   nodeId: number;
+  routingData: LinkStateData;
 }
 
-const ForwardingTable: React.FC<ForwardingTableProps> = ({ nodeId }) => {
-  const network = useSelector(selectNetworkData);
-  const routingData = useSelector(selectRoutingData);
-
-  if (!routingData.data || !routingData.data[nodeId]) {
+const LSForwardingTable: React.FC<ForwardingTableProps> = ({
+  nodeId,
+  routingData
+}) => {
+  // Get data for src node
+  const nodeData = routingData[nodeId];
+  if (!nodeData) {
     return (
       <Typography level='body-sm'>
-        No data yet. Iterate the simulation to calculate forwarding table.
+        No data for this node. Iterate the simulation to calculate forwarding table.
       </Typography>
     );
-  }
-
-  const calculateRow = (dest: number, data: NonNullRoutingData) => {
-    if (data.algorithm === "LS") {
-      return calculateLSRow(data.data, nodeId, dest);
-    } else {
-      return { dist: Infinity, next: '-' };
-    }
   }
 
   return (
@@ -49,12 +42,12 @@ const ForwardingTable: React.FC<ForwardingTableProps> = ({ nodeId }) => {
           </tr>
         </thead>
         <tbody>
-          {network.nodes.map(node => {
-            if (node.id === nodeId) return null;
-            const { dist, next } = calculateRow(node.id, routingData as NonNullRoutingData);
+          {nodeData[nodeData.length - 1].dist.map((_, idx) => {
+            if (idx === nodeId) return null;
+            const { dist, next } = calculateLSRow(nodeData, nodeId, idx);
             return (
-              <tr key={node.id}>
-                <td>Node {node.id}</td>
+              <tr key={idx}>
+                <td>Node {idx}</td>
                 <td>{dist !== Infinity ? dist : "-"}</td>
                 <td>{next}</td>
               </tr>
@@ -73,5 +66,4 @@ const ForwardingTable: React.FC<ForwardingTableProps> = ({ nodeId }) => {
   )
 }
 
-
-export default ForwardingTable;
+export default LSForwardingTable;

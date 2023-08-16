@@ -1,6 +1,6 @@
 // Calculations for Link State routing
 
-import { DijkstraData, ForwardingTableRow, LinkStateData, NetworkData } from '../types';
+import { DijkstraData, ForwardingTableRow, NetworkData } from '../types';
 import { minBy, range, replicate } from './helpers';
 
 type Graph = {
@@ -15,11 +15,12 @@ export const calculateLinkStateData = (network: NetworkData) => {
 }
 
 export const calculateLSRow = (
-  data: LinkStateData,
+  data: DijkstraData[],
   src: number,
   dest: number
 ): ForwardingTableRow => {
-  const final = data[src][data[src].length - 1];
+  // Extract data from final iteration
+  const final = data[data.length - 1];
   if (!final || dest >= final.pred.length || final.dist[dest] === Infinity) {
     return {
       dist: Infinity,
@@ -27,6 +28,7 @@ export const calculateLSRow = (
     }
   }
 
+  // Loop back through pred array
   let curr = dest;
   while (curr !== -1 && final.pred[curr] !== src) {
     curr = final.pred[curr];

@@ -32,7 +32,7 @@ const ConfigurationPane = () => {
   }, [networkData.nodes]);
 
   React.useEffect(() => {
-    if (!isNaN(num) && num >= 2 && num !== networkData.nodes.length) {
+    if (!isNaN(num) && num >= 2) {
       dispatch(setNumNodes(num));
     }
   }, [num, dispatch]);

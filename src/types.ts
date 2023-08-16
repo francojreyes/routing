@@ -20,14 +20,6 @@ export type Algorithm = 'LS' | 'DV';
 
 export type RoutingData = {
   algorithm: 'LS';
-  data: LinkStateData | null;
-} | {
-  algorithm: 'DV';
-  data: DistanceVectorData | null;
-}
-
-export type NonNullRoutingData = {
-  algorithm: 'LS';
   data: LinkStateData;
 } | {
   algorithm: 'DV';
