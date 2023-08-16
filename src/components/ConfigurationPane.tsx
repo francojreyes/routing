@@ -41,8 +41,6 @@ const ConfigurationPane = () => {
   const [to, setTo] = React.useState(1);
   const [cost, setCost] = React.useState(1);
 
-
-
   return (
     <Card variant="outlined" sx={{ width: 300, position: 'fixed', top: 20, left: 20, zIndex: 100 }}>
       <Typography level='h3'>Configuration</Typography>
