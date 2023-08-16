@@ -92,6 +92,9 @@ const networkSlice = createSlice({
       state.routing = { algorithm: "LS", data: [] };
     },
     selectNode: (state, action: PayloadAction<Node>) => {
+      if (!state.routing.data[action.payload.id]) {
+        state.showCalculations = false;
+      }
       state.selectedNode = action.payload;
     },
     deselectNode: (state) => {
