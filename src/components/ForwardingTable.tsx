@@ -25,7 +25,7 @@ const ForwardingTable: React.FC<ForwardingTableProps> = ({
   if (!routingData.data[nodeId]) {
     return (
       <Typography level='body-sm'>
-        No data for this node. Iterate the simulation to calculate forwarding table.
+        No data for this node. Run the simulation to calculate forwarding table.
       </Typography>
     );
   }

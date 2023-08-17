@@ -19,7 +19,7 @@ const SimulationPane = () => {
       <Typography level='h3'>Simulation</Typography>
 
       <Button startDecorator={<SkipNextIcon/>} onClick={() => dispatch(iterate())}>
-        Iterate Simulation
+        {routingData.algorithm === "LS" ? "Flood Link State" : "Send Distance Vectors"}
       </Button>
 
       <Typography level='h4' mb={-1}>

@@ -33,7 +33,7 @@ export const generateRandomNetwork = (): NetworkData => {
       .slice(0, Math.ceil(0.4 * n));
     for (const w of ws) {
       // Check if edge v-w intersects previous edges
-      const newEdge = { v, w, weight: randInt(1, 6) };
+      const newEdge = { v, w, weight: randInt(1, 11) };
       if (edges.every(edge => !intersect(edge, newEdge, nodes))) {
         edges.push(newEdge);
       }
