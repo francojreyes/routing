@@ -42,6 +42,7 @@ export type DistanceVector = Array<{
 
 export type DistanceVectorData = Array<{
   received: DistanceVector[];
+  adj: GraphEdge[];
   self: DistanceVector;
 }>;
 
@@ -51,8 +52,10 @@ export interface ForwardingTableEntry {
   next: string;
 }
 
-export type Graph = {
+export interface GraphEdge {
   from: number,
   to: number,
   weight: number
-}[][];
+}
+
+export type Graph = GraphEdge[][];

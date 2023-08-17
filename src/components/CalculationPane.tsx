@@ -6,6 +6,7 @@ import Stack from '@mui/joy/Stack';
 import Card from '@mui/joy/Card';
 import CloseIcon from '@mui/icons-material/Close';
 import LSCalculations from './LSCalculations';
+import DVCalculations from './DVCalculations';
 
 interface CalculationPaneProps {
   close: () => void;
@@ -38,7 +39,7 @@ const CalculationPane: React.FC<CalculationPaneProps> = ({
       >
         {data.algorithm === "LS"
           ? <LSCalculations nodeId={nodeId} data={data.data[nodeId]}/>
-          : <Typography>DV calculations go here</Typography>
+          : <DVCalculations nodeId={nodeId} data={data.data[nodeId]}/>
         }
       </Stack>
     </Card>

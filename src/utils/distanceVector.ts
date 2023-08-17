@@ -8,14 +8,29 @@ export const calculateRoutingDataDV = (
   console.log("ITERATE")
   return networkToGraph(network).map((adj, i) => {
     // Get the 'received' vectors from previous iteration
-    const received = adj.map(edge => prev[edge.to].self);
+    const received = adj.map(edge => prev[edge.to]?.self);
 
     return {
       received,
+      adj,
       self: calculateDistanceVector(adj, received, i)
         .filter(({ dest }) => dest < network.nodes.length)
     }
   });
+}
+
+export const updateDVData1 = (
+  network: NetworkData,
+  prev: DistanceVectorData[number],
+  node: number
+): DistanceVectorData[number] => {
+  const graph = networkToGraph(network);
+  return {
+    received: prev.received,
+    adj: graph[node],
+    self: calculateDistanceVector(graph[node], prev.received, node)
+      .filter(({ dest }) => dest < network.nodes.length)
+  };
 }
 
 // Takes in an array of edges, and the distance vectors received from those edges
@@ -24,33 +39,32 @@ const calculateDistanceVector = (
   vectors: DistanceVector[],
   node: number
 ): DistanceVector => {
-  console.assert(adj.length === vectors.length);
-
-  console.log(`Node ${node} received the following vectors: ${JSON.stringify(vectors, null, 2)}`)
   const res: DistanceVector = [{ dest: node, dist: 0, next: -1 }];
   for (let i = 0; i < adj.length; i++) {
-    for (const entry of vectors[i]) {
-      // Find current entry in distance vector
-      const existingEntry = res.find(e => e.dest === entry.dest);
+    if (vectors[i]) {
+      for (const entry of vectors[i]) {
+        // Find current entry in distance vector
+        const existingEntry = res.find(e => e.dest === entry.dest);
 
-      // Ignore routing through self
-      if (entry.next === node) {
-        continue;
-      }
+        // Ignore routing through self
+        if (entry.next === node) {
+          continue;
+        }
 
-      const dist = entry.dist + adj[i].weight;
-      if (!existingEntry) {
-        console.log(`Adding new entry: ${JSON.stringify({ dest: entry.dest, dist, next: adj[i].to })}`)
-        res.push({ dest: entry.dest, dist, next: adj[i].to });
-      } else if (dist < existingEntry.dist) {
-        console.log(`Updating ${JSON.stringify(existingEntry)} to ${JSON.stringify({ dest: entry.dest, dist, next: adj[i].to })}`)
-        existingEntry.dist = dist;
-        existingEntry.next = adj[i].to;
+        const dist = entry.dist + adj[i].weight;
+        if (!existingEntry) {
+          res.push({ dest: entry.dest, dist, next: adj[i].to });
+        } else if (dist < existingEntry.dist) {
+          existingEntry.dist = dist;
+          existingEntry.next = adj[i].to;
+        }
       }
+    } else {
+      res.push({ dest: adj[i].to, dist: adj[i].weight, next: adj[i].to });
     }
+
   }
 
-  console.log(`Node ${node} calculated the following vector: ${JSON.stringify(res, null, 2)}`)
   return res.sort((a, b) => a.dest - b.dest);
 }
 
@@ -66,6 +80,7 @@ export const calculateInitialData = (
 
   return {
     received: [],
+    adj: graph[node],
     self: vector.sort((a, b) => a.dest - b.dest)
   }
 }

@@ -8,7 +8,7 @@ import { Algorithm, NetworkData, Node, RoutingData } from '../types';
 import { calculateRoutingDataLS } from '../utils/linkState';
 import { matchingEdge, range } from '../utils/helpers';
 import { generateRandomNetwork } from '../utils/randomNetwork';
-import { calculateInitialData, calculateRoutingDataDV } from '../utils/distanceVector';
+import { calculateInitialData, calculateRoutingDataDV, updateDVData1 } from '../utils/distanceVector';
 
 interface NetworkState {
   data: NetworkData;
@@ -83,6 +83,12 @@ const networkSlice = createSlice({
       if (edge) {
         // Update cost
         edge.label = cost.toString();
+
+        // Recalculate distance vectors with updated edge weight
+        if (state.routing.algorithm === "DV") {
+          state.routing.data[from] = updateDVData1(network, state.routing.data[from], from);
+          state.routing.data[to] = updateDVData1(network, state.routing.data[to], to);
+        }
       } else {
         // New edge
         network.edges.push({
