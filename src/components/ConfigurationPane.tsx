@@ -58,7 +58,7 @@ const ConfigurationPane = () => {
           onChange={(_, value) => dispatch(setAlgorithm(value ?? "LS"))}
         >
           <Button sx={{ width: '50%' }} value="LS">Link State</Button>
-          <Button sx={{ width: '50%' }} value="DV" disabled>Distance Vector</Button>
+          <Button sx={{ width: '50%' }} value="DV">Distance Vector</Button>
         </ToggleButtonGroup>
       </FormLabel>
 

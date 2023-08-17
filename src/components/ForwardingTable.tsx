@@ -11,11 +11,13 @@ import { showCalculations } from '../redux/networkSlice';
 interface ForwardingTableProps {
   nodeId: number;
   routingData: RoutingData;
+  numNodes: number;
 }
 
 const ForwardingTable: React.FC<ForwardingTableProps> = ({
   nodeId,
-  routingData
+  routingData,
+  numNodes
 }) => {
   const dispatch = useDispatch();
 
@@ -60,7 +62,7 @@ const ForwardingTable: React.FC<ForwardingTableProps> = ({
             </tr>
           </thead>
           <tbody>
-            {rows.map(({ dest, dist, next }) => dest !== nodeId && (
+            {rows.map(({ dest, dist, next }) => dest !== nodeId && dest < numNodes && (
               <tr key={dest}>
                 <td>Node {dest}</td>
                 <td>{dist !== Infinity ? dist : "-"}</td>

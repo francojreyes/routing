@@ -13,6 +13,7 @@ import {
 } from '../redux/networkSlice';
 import { range } from '../utils/helpers';
 import { selectEdgesLS } from '../utils/linkState';
+import { selectEdgesDV } from '../utils/distanceVector';
 
 const Graph = () => {
   const dispatch = useDispatch();
@@ -132,7 +133,7 @@ const getRouteEdges = (
   if (routingData.algorithm === "LS") {
     return selectEdgesLS(edges, routingData.data, src)
   } else {
-    return [];
+    return selectEdgesDV(edges, routingData.data, src);
   }
 }
 

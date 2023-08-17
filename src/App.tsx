@@ -27,8 +27,6 @@ const Main = () => {
 
   const closeCalculations = () => dispatch(hideCalculations());
 
-  console.log(JSON.stringify(selected) + " " + showCalc)
-
   return (
     <>
       {!selected || !showCalc
