@@ -51,5 +51,6 @@ export const networkToGraph = (network: NetworkData): Graph => {
     graph[edge.to].push({ from: edge.to, to: edge.from, weight: +edge.label });
   }
 
+  graph.forEach(adj => adj.sort((a, b) => a.to - b.to));
   return graph;
 }

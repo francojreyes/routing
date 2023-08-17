@@ -90,7 +90,12 @@ export const selectEdgesDV = (
   src: number
 ): number[] => {
   return doSelectEdges(
-    edges, data, src, data[src].self.map(entry => entry.dest), new Set<number>());
+    edges,
+    data,
+    src,
+    data[src].self.map(entry => entry.dest).filter(i => i !== src),
+    new Set<number>()
+  );
 }
 
 // Recursive helper - gets edges from current node towards all destinations
