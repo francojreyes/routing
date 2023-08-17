@@ -5,7 +5,6 @@ export const calculateRoutingDataDV = (
   network: NetworkData,
   prev: DistanceVectorData
 ): DistanceVectorData => {
-  console.log("ITERATE")
   return networkToGraph(network).map((adj, i) => {
     // Get the 'received' vectors from previous iteration
     const received = adj.map(edge => prev[edge.to]?.self);
