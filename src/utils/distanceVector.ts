@@ -42,14 +42,16 @@ const calculateDistanceVector = (
 }
 
 export const calculateInitialData = (
-  network: NetworkData
-): DistanceVectorData => {
-  return networkToGraph(network).map(adj => ({
+  network: NetworkData,
+  node: number
+): DistanceVectorData[number] => {
+  const graph = networkToGraph(network)
+  return {
     received: [],
-    self: adj
+    self: graph[node]
       .map(edge => ({ dest: edge.to, dist: edge.weight, next: edge.to }))
       .sort((a, b) => a.dest - b.dest)
-  }));
+  }
 }
 
 export const selectEdgesDV = (

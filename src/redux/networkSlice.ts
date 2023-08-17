@@ -8,6 +8,7 @@ import { Algorithm, NetworkData, Node, RoutingData } from '../types';
 import { calculateRoutingDataLS } from '../utils/linkState';
 import { matchingEdge, range } from '../utils/helpers';
 import { generateRandomNetwork } from '../utils/randomNetwork';
+import { calculateInitialData, calculateRoutingDataDV } from '../utils/distanceVector';
 
 interface NetworkState {
   data: NetworkData;
@@ -48,6 +49,13 @@ const networkSlice = createSlice({
           label: i.toString(),
           shape: 'circle'
         } as Node)));
+
+        // Initialise DV data
+        if (state.routing.algorithm === "DV") {
+          state.routing.data.push(
+            ...range(network.nodes.length, n).map(i => calculateInitialData(network, i))
+          );
+        }
       } else {
         // Take the first n nodes, and remove all edges to removed nodes
         network.nodes = network.nodes.slice(0, n);
@@ -89,7 +97,13 @@ const networkSlice = createSlice({
       state.data = generateRandomNetwork();
       state.selectedNode = null;
       state.showCalculations = false;
-      state.routing = { algorithm: "LS", data: [] };
+      if (state.routing.algorithm === "LS") {
+        state.routing.data = [];
+      } else {
+        state.routing.data = state.data.nodes.map(
+          (_, i) => calculateInitialData(state.data, i)
+        );
+      }
     },
     selectNode: (state, action: PayloadAction<Node>) => {
       if (!state.routing.data[action.payload.id]) {
@@ -103,9 +117,16 @@ const networkSlice = createSlice({
     },
     setAlgorithm: (state, action: PayloadAction<Algorithm>) => {
       state.routing.algorithm = action.payload;
+      if (state.routing.algorithm === "LS") {
+        state.routing.data = [];
+      } else {
+        state.routing.data = state.data.nodes.map(
+          (_, i) => calculateInitialData(state.data, i)
+        );
+      }
     },
     iterate: (state) => {
-      state.routing = calculateRoutingData(state, state.routing.algorithm);
+      state.routing = calculateRoutingData(state.data, state.routing);
     },
     showCalculations: (state) => {
       state.showCalculations = true;
@@ -117,13 +138,21 @@ const networkSlice = createSlice({
 });
 
 const calculateRoutingData = (
-  state: NetworkState,
-  algorithm: Algorithm
+  network: NetworkData,
+  routingData: RoutingData
 ): RoutingData => {
-  return {
-    algorithm: "LS",
-    data: calculateRoutingDataLS(state.data)
-  };
+  if (routingData.algorithm === "LS") {
+    return {
+      algorithm: "LS",
+      data: calculateRoutingDataLS(network)
+    };
+  } else {
+    return {
+      algorithm: "DV",
+      data: calculateRoutingDataDV(network, routingData.data)
+    }
+  }
+
 }
 
 export const {
