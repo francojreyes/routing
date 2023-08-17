@@ -1,28 +1,23 @@
 // Calculations for Link State routing
 
-import { DijkstraData, ForwardingTableRow, NetworkData } from '../types';
-import { minBy, range, replicate } from './helpers';
+import { DijkstraData, Edge, ForwardingTableEntry, Graph, LinkStateData, NetworkData } from '../types';
+import { matchingEdge, minBy, networkToGraph, range, replicate } from './helpers';
 
-type Graph = {
-  from: number,
-  to: number,
-  weight: number
-}[][];
-
-export const calculateLinkStateData = (network: NetworkData) => {
+export const calculateRoutingDataLS = (network: NetworkData) => {
   const graph = networkToGraph(network);
   return range(graph.length).map(node => dijkstra(graph, node));
 }
 
-export const calculateLSRow = (
+export const calculateRowLS = (
   data: DijkstraData[],
   src: number,
   dest: number
-): ForwardingTableRow => {
+): ForwardingTableEntry => {
   // Extract data from final iteration
   const final = data[data.length - 1];
   if (!final || dest >= final.pred.length || final.dist[dest] === Infinity) {
     return {
+      dest,
       dist: Infinity,
       next: "-"
     }
@@ -35,25 +30,10 @@ export const calculateLSRow = (
   }
 
   return {
+    dest,
     dist: final.dist[dest],
     next: `Node ${curr}`
   }
-}
-
-// Convert network data to an adjacency list graph
-const networkToGraph = (network: NetworkData): Graph => {
-  const graph: Graph = [];
-  for (let i = 0; i < network.nodes.length; i++) {
-    graph.push([]);
-  }
-
-  for (const edge of network.edges) {
-    if (edge.label === '0') continue;
-    graph[edge.from].push({ from: edge.from, to: edge.to, weight: +edge.label });
-    graph[edge.to].push({ from: edge.to, to: edge.from, weight: +edge.label });
-  }
-
-  return graph;
 }
 
 // Run Dijkstra's and return a list containing the data at each iteration
@@ -91,5 +71,22 @@ const dijkstra = (graph: Graph, src: number): DijkstraData[] => {
   }
 
   return iterations;
+}
+
+export const selectEdgesLS = (
+  edges: Edge[],
+  data: LinkStateData,
+  src: number
+) => {
+  const iterations = data[src];
+  const final = iterations[iterations.length - 1];
+
+  const selectedEdges: number[] = [];
+  for (let i = 0; i < final.pred.length; i++) {
+    const edge = edges.find(e => matchingEdge(e, i, final.pred[i]));
+    if (edge && edge.label !== '0') selectedEdges.push(edge.id);
+  }
+
+  return selectedEdges;
 }
 

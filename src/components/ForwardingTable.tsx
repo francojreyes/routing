@@ -2,31 +2,44 @@ import React from 'react';
 import Table from '@mui/joy/Table';
 import Typography from '@mui/joy/Typography';
 
-import { LinkStateData } from '../types';
-import { calculateLSRow } from '../utils/linkState';
+import { ForwardingTableEntry, RoutingData } from '../types';
+import { calculateRowLS } from '../utils/linkState';
 import { Link, Sheet } from '@mui/joy';
 import { useDispatch } from '../redux/hooks';
 import { showCalculations } from '../redux/networkSlice';
 
 interface ForwardingTableProps {
   nodeId: number;
-  routingData: LinkStateData;
+  routingData: RoutingData;
 }
 
-const LSForwardingTable: React.FC<ForwardingTableProps> = ({
+const ForwardingTable: React.FC<ForwardingTableProps> = ({
   nodeId,
   routingData
 }) => {
   const dispatch = useDispatch();
 
   // Get data for src node
-  const nodeData = routingData[nodeId];
-  if (!nodeData) {
+  if (!routingData.data[nodeId]) {
     return (
       <Typography level='body-sm'>
         No data for this node. Iterate the simulation to calculate forwarding table.
       </Typography>
     );
+  }
+
+  let rows: ForwardingTableEntry[];
+  if (routingData.algorithm === "LS") {
+    const srcData = routingData.data[nodeId];
+    rows = srcData[srcData.length - 1].dist.map(
+      (_, idx) => calculateRowLS(srcData, nodeId, idx)
+    )
+  } else {
+    rows = routingData.data[nodeId].self.map(({ dest, dist, next }) => ({
+      dest,
+      dist,
+      next: `Node ${next.toString()}`
+    }));
   }
 
   return (
@@ -47,17 +60,13 @@ const LSForwardingTable: React.FC<ForwardingTableProps> = ({
             </tr>
           </thead>
           <tbody>
-            {nodeData[nodeData.length - 1].dist.map((_, idx) => {
-              if (idx === nodeId) return null;
-              const { dist, next } = calculateLSRow(nodeData, nodeId, idx);
-              return (
-                <tr key={idx}>
-                  <td>Node {idx}</td>
-                  <td>{dist !== Infinity ? dist : "-"}</td>
-                  <td>{next}</td>
-                </tr>
-              )
-            })}
+            {rows.map(({ dest, dist, next }) => dest !== nodeId && (
+              <tr key={dest}>
+                <td>Node {dest}</td>
+                <td>{dist !== Infinity ? dist : "-"}</td>
+                <td>{next}</td>
+              </tr>
+            ))}
           </tbody>
           <tfoot>
             <tr>
@@ -72,4 +81,4 @@ const LSForwardingTable: React.FC<ForwardingTableProps> = ({
   )
 }
 
-export default LSForwardingTable;
+export default ForwardingTable;

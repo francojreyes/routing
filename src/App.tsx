@@ -7,7 +7,7 @@ import store from './redux/store';
 import { CssBaseline } from '@mui/joy';
 import { useDispatch, useSelector } from './redux/hooks';
 import { hideCalculations, selectRoutingData, selectSelectedNode, selectShowCalculations } from './redux/networkSlice';
-import LSCalculationPane from './components/LSCalculationPane';
+import CalculationPane from './components/CalculationPane';
 
 function App() {
   return (
@@ -33,13 +33,11 @@ const Main = () => {
     <>
       {!selected || !showCalc
         ? <ConfigurationPane/>
-        : routingData.algorithm === "LS"
-          ? <LSCalculationPane
+        : <CalculationPane
             close={closeCalculations}
             nodeId={selected.id}
-            data={routingData.data[selected.id]}
+            data={routingData}
           />
-          : null
       }
       <Graph/>
       <SimulationPane/>

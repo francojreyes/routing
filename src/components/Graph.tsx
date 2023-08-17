@@ -11,7 +11,8 @@ import {
   selectRoutingData,
   selectSelectedNode
 } from '../redux/networkSlice';
-import { matchingEdge, range } from '../utils/helpers';
+import { range } from '../utils/helpers';
+import { selectEdgesLS } from '../utils/linkState';
 
 const Graph = () => {
   const dispatch = useDispatch();
@@ -124,21 +125,12 @@ const Graph = () => {
 const getRouteEdges = (
   edges: Edge[],
   routingData: RoutingData,
-  node: number
+  src: number
 ): number[] => {
-  if (!routingData.data || !routingData.data[node]) return [];
+  if (!routingData.data || !routingData.data[src]) return [];
 
   if (routingData.algorithm === "LS") {
-    const iterations = routingData.data[node];
-    const final = iterations[iterations.length - 1];
-
-    const selectedEdges: number[] = [];
-    for (let i = 0; i < final.pred.length; i++) {
-      const edge = edges.find(e => matchingEdge(e, i, final.pred[i]));
-      if (edge && edge.label !== '0') selectedEdges.push(edge.id);
-    }
-
-    return selectedEdges;
+    return selectEdgesLS(edges, routingData.data, src)
   } else {
     return [];
   }

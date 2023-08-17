@@ -35,16 +35,24 @@ export interface DijkstraData {
 }
 
 export type DistanceVector = Array<{
+  dest: number;
   dist: number;
   next: number;
 }>;
 
 export type DistanceVectorData = Array<{
-  neighbours: DistanceVector[];
+  received: DistanceVector[];
   self: DistanceVector;
 }>;
 
-export interface ForwardingTableRow {
+export interface ForwardingTableEntry {
+  dest: number;
   dist: number;
   next: string;
 }
+
+export type Graph = {
+  from: number,
+  to: number,
+  weight: number
+}[][];

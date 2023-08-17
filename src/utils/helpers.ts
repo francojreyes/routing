@@ -1,4 +1,5 @@
 import { Edge } from 'vis-network';
+import { Graph, NetworkData } from '../types';
 
 // Return whether an edge matches
 export const matchingEdge = (e: Edge, u: number, v: number): boolean => {
@@ -35,4 +36,20 @@ export const removeItem = <T>(arr: Array<T>, value: T): Array<T> => {
     arr.splice(index, 1);
   }
   return arr;
+}
+
+// Convert network data to an adjacency list graph
+export const networkToGraph = (network: NetworkData): Graph => {
+  const graph: Graph = [];
+  for (let i = 0; i < network.nodes.length; i++) {
+    graph.push([]);
+  }
+
+  for (const edge of network.edges) {
+    if (edge.label === '0') continue;
+    graph[edge.from].push({ from: edge.from, to: edge.to, weight: +edge.label });
+    graph[edge.to].push({ from: edge.to, to: edge.from, weight: +edge.label });
+  }
+
+  return graph;
 }

@@ -5,7 +5,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { RootState } from "./store";
 import { Algorithm, NetworkData, Node, RoutingData } from '../types';
-import { calculateLinkStateData } from '../utils/linkState';
+import { calculateRoutingDataLS } from '../utils/linkState';
 import { matchingEdge, range } from '../utils/helpers';
 import { generateRandomNetwork } from '../utils/randomNetwork';
 
@@ -122,7 +122,7 @@ const calculateRoutingData = (
 ): RoutingData => {
   return {
     algorithm: "LS",
-    data: calculateLinkStateData(state.data)
+    data: calculateRoutingDataLS(state.data)
   };
 }
 
