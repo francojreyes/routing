@@ -59,9 +59,9 @@ const DijkstraIteration: React.FC<DijkstraIterationProps> = ({ num, data }) => {
       <Typography fontWeight="bolder">{num ? `Iteration ${num}:` : "Initial State:" }</Typography>
       <Box pl={1}>
         <Typography fontSize="sm" mb={0.5}>
-          <Typography>Visited nodes:</Typography> {data.vSet.join(", ")}
+          Visited nodes: {data.vSet.join(", ")}
         </Typography>
-        <Table sx={{ width: 'auto' }} borderAxis="both" size="sm">
+        <Table sx={{ width: 'auto' }} borderAxis="bothBetween" size="sm" variant="outlined">
           <thead>
           <tr>
             <th style={{ width: 100 }}>Node</th>

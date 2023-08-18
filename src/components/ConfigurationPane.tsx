@@ -89,6 +89,7 @@ const ConfigurationPane = () => {
                 type="number"
                 value={value}
                 onChange={e => setValue(e.target.valueAsNumber)}
+                onKeyDown={e => e.key === "Enter" && dispatch(updateEdge({ from, to, cost }))}
                 slotProps={{ input: inputProps }}
               />
             </FormLabel>
