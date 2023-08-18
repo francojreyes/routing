@@ -7,11 +7,12 @@ import Input from '@mui/joy/Input';
 import Stack from '@mui/joy/Stack';
 import ToggleButtonGroup from '@mui/joy/ToggleButtonGroup';
 import Typography from '@mui/joy/Typography';
+import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import ShuffleIcon from '@mui/icons-material/Shuffle';
 
 import { useDispatch, useSelector } from '../redux/hooks';
 import {
-  randomiseNetwork,
+  randomiseNetwork, resetNetwork,
   selectAlgorithm,
   selectNetworkData,
   setAlgorithm,
@@ -44,9 +45,19 @@ const ConfigurationPane = () => {
   return (
     <Card variant="outlined" sx={{ width: 300, position: 'fixed', top: 20, left: 20, zIndex: 100 }}>
       <Typography level='h3'>Configuration</Typography>
-      <Button startDecorator={<ShuffleIcon/>} onClick={() => dispatch(randomiseNetwork())}>
-        Randomise Network
-      </Button>
+      <Stack spacing={1}>
+        <Button startDecorator={<ShuffleIcon/>} onClick={() => dispatch(randomiseNetwork())}>
+          Randomise Network
+        </Button>
+        <Button
+          startDecorator={<RestartAltIcon/>}
+          onClick={() => dispatch(resetNetwork())}
+          variant="soft"
+          color="neutral"
+        >
+          Reset Network
+        </Button>
+      </Stack>
 
       <Typography level='h4'>Routing Algorithm</Typography>
       <FormLabel>

@@ -11,7 +11,7 @@ interface LSCalculationsProps {
 }
 
 const LSCalculations: React.FC<LSCalculationsProps> = ({ nodeId, data }) => {
-  return (
+  return data && (
     <>
       <Typography level="h4">Dijkstra's Algorithm Iterations</Typography>
       <Stack direction="column" spacing={2} mb={1}>

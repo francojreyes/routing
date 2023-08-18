@@ -103,13 +103,13 @@ const networkSlice = createSlice({
       state.data = generateRandomNetwork();
       state.selectedNode = null;
       state.showCalculations = false;
-      if (state.routing.algorithm === "LS") {
-        state.routing.data = [];
-      } else {
-        state.routing.data = state.data.nodes.map(
-          (_, i) => calculateInitialData(state.data, i)
-        );
-      }
+      state.routing = calculateInitialRoutingData(state.data, state.routing.algorithm);
+    },
+    resetNetwork: (state) => {
+      state.data = initialState.data;
+      state.selectedNode = null;
+      state.showCalculations = false;
+      state.routing = calculateInitialRoutingData(state.data, state.routing.algorithm);
     },
     selectNode: (state, action: PayloadAction<Node>) => {
       if (!state.routing.data[action.payload.id]) {
@@ -122,17 +122,15 @@ const networkSlice = createSlice({
       state.showCalculations = false;
     },
     setAlgorithm: (state, action: PayloadAction<Algorithm>) => {
-      state.routing.algorithm = action.payload;
-      if (state.routing.algorithm === "LS") {
-        state.routing.data = [];
-      } else {
-        state.routing.data = state.data.nodes.map(
-          (_, i) => calculateInitialData(state.data, i)
-        );
-      }
+      if (action.payload === state.routing.algorithm) return;
+      state.routing = calculateInitialRoutingData(state.data, action.payload);
     },
     iterate: (state) => {
       state.routing = calculateRoutingData(state.data, state.routing);
+    },
+    clearRoutingData: (state) => {
+      state.showCalculations = false;
+      state.routing = calculateInitialRoutingData(state.data, state.routing.algorithm);
     },
     showCalculations: (state) => {
       state.showCalculations = true;
@@ -158,17 +156,34 @@ const calculateRoutingData = (
       data: calculateRoutingDataDV(network, routingData.data)
     }
   }
+}
 
+const calculateInitialRoutingData = (
+  network: NetworkData,
+  algorithm: Algorithm
+): RoutingData => {
+  if (algorithm === "LS") {
+    return { algorithm, data: [] };
+  } else {
+    return {
+      algorithm,
+      data: network.nodes.map(
+        (_, i) => calculateInitialData(network, i)
+      )
+    };
+  }
 }
 
 export const {
   setNumNodes,
   updateEdge,
+  resetNetwork,
   randomiseNetwork,
   selectNode,
   deselectNode,
   setAlgorithm,
   iterate,
+  clearRoutingData,
   showCalculations,
   hideCalculations
 } = networkSlice.actions;
